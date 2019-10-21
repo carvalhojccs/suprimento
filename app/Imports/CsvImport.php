@@ -3,7 +3,8 @@
 namespace App\Imports;
 
 use App\Models\Unidade;
-USE App\Models\Material;
+use App\Models\Material;
+use App\Models\Movimento;
 //use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
@@ -57,24 +58,41 @@ class CsvImport implements ToCollection
          * Cadastro de materiais
          * 
          */
-        
-        $materiais = [];
-        
         foreach($rows as $row):
             if($row[0] != null):
                 //busca o id da unidade
                 $unidade = Unidade::where('descricao',$row[3])->first();
-            echo "<pre>";
-                var_dump($row[2]);
-            echo "</pre>";
-//                Material::updateOrCreate([
-//                    'conta_id' => request()->get('conta_id'),
-//                    'unidade_id' => $unidade->id,
-//                    'pn' => $row[0],
-//                    'nomenclatura'  => $row[2]
-//                ]);
+                Material::updateOrCreate([
+                    'conta_id' => request()->get('conta_id'),
+                    'unidade_id' => $unidade->id,
+                    'pn' => $row[0],
+                    'nomenclatura'  => $row[2]
+                ]);
             endif;
         endforeach;
+        
+        /**
+         * Cadastro de movimentos
+         */
+        foreach($rows as $row):
+            if($row[0] != null):
+                $material = Material::where('nomenclatura',$row[2])->first();
+                
+                Movimento::updateOrCreate([
+                    'material_id'       =>  $material->id,
+                    'local_id'          =>  request()->get('local_id'),
+                    'user_id'           =>  1,
+                    'tipo_movimento'    => 'E',
+                    'numero_documento'  => '',
+                    'data_documento'     => null,
+                    'estoque_anterior'  => 0,
+                    'entrada'           => $row[10],
+                    'saida'             => 0,
+                    'estoque_atual'     => $row[10]                    
+                ]);
+            endif;
+        endforeach;
+        
 
     }
 }

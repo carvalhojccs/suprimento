@@ -6,15 +6,19 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Imports\CsvImport;
 use App\Repositories\Contracts\ContaRepositoryInterface;
+use App\Repositories\Contracts\LocalRepositoryInterface;
 
 
 class CsvFile extends Controller
 {
     protected $unidadeRepository;
-    
-    public function __construct(ContaRepositoryInterface $contaRepository) 
+    protected $localRepository;
+
+
+    public function __construct(ContaRepositoryInterface $contaRepository, LocalRepositoryInterface $localRepository) 
     {
         $this->contaRepository = $contaRepository;
+        $this->localRepository = $localRepository;
     }
 
 
@@ -23,7 +27,10 @@ class CsvFile extends Controller
         //recupera todos as unidades
         $contas = $this->contaRepository->selectContas();
         
-        return view('admin.imports.csv_file', compact('contas'));
+        //recupera todas as localidades
+        $locais = $this->localRepository->selectLocais();
+        
+        return view('admin.imports.csv_file', compact('contas','locais'));
     }
     
     

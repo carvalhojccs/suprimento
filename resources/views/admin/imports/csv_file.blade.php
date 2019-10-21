@@ -12,6 +12,11 @@
                     {{ Form::label('conta_id','Conta corrente') }}
                     {{ Form::select('conta_id',$contas,null,['placeholder' => 'Selecione uma conta...', 'class' => 'form-control', 'id' => 'contas']) }}
                 </div>
+               
+                <div class="form-group col-md-3">
+                    {{ Form::label('local_id','Local') }}
+                    {{ Form::select('local_id',$locais,null,['placeholder' => 'Selecione um local...', 'class' => 'form-control', 'id' => 'locais']) }}
+                </div>
            
                 <div class="form-group col-md-3">
                     {{ Form::label('conta_id','Selecione o arquivo CSV para importação') }}
